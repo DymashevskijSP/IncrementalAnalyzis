@@ -1,0 +1,11 @@
+typedef Id = bigint
+
+input relation Edge(from: Id, to: Id)
+input relation Node(id: Id, label: string, name: string, filename: string, overrided: bool, invoke_call: bool, call_call: bool, offset_get: bool, current_call: bool, to_strings: bool, get_set_call: bool, arb_obj_instance: bool, vuln: bool)
+relation Reachable(from: Id)
+Reachable(from) :- Node(from, "Function", _, _, _, _, _, _, _, _, _, _, true).
+Reachable(from) :- Edge(from, c), Reachable(c).
+output relation Next(v: Id, nxt: Id)
+Next(from, nxt) :- Node(from, _, "__destruct", _, _, _, _, _, _, _, _, _, _), Edge(from, nxt), Reachable(nxt).
+Next(from, nxt) :- Node(from, _, "__wakeup", _, _, _, _, _, _, _, _, _, _), Edge(from, nxt), Reachable(nxt).
+Next(from, nxt) :- Next(_, from), Reachable(nxt), Edge(from, nxt).
